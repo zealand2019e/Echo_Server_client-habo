@@ -6,7 +6,7 @@ namespace Echo_Server_Client
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            new Server().Start();
         }
     }
 }
