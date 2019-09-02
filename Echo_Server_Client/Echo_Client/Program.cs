@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Echo_Server
+namespace Echo_Client
 {
     class Program
     {
         static void Main(string[] args)
         {
-            new Server().Start();
+             new Client().Connect("localhost","message");
         }
     }
 }

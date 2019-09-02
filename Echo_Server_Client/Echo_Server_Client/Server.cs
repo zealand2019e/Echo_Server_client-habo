@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace Echo_Server_Client
+namespace Echo_Server
 {
     class Server
     {
