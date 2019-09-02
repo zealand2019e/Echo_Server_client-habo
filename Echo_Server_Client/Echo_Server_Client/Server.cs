@@ -54,6 +54,9 @@ namespace Echo_Server
                         // Process the data sent by the client.
                         data = data.ToUpper();
 
+                        string[] words = data.Split(' ');
+                        data = data + " " + words.Length;
+
                         byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
 
                         // Send back a response.

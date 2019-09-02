@@ -6,7 +6,7 @@ namespace Echo_Client
     {
         static void Main(string[] args)
         {
-             new Client().Connect("localhost","message");
+             new Client().Connect("localhost","message word word word");
         }
     }
 }
