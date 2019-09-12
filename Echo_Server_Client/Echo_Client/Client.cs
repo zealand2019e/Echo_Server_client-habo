@@ -56,9 +56,6 @@ namespace Echo_Client
             {
                 Console.WriteLine("SocketException: {0}", e);
             }
-
-            Console.WriteLine("\n Press Enter to continue...");
-            Console.Read();
         }
     }
 }

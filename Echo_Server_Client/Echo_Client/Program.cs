@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Echo_Client
 {
@@ -6,7 +7,13 @@ namespace Echo_Client
     {
         static void Main(string[] args)
         {
-             new Client().Connect("localhost","message word word word");
+            while (true)
+            {
+                Console.WriteLine("Press a key to send the message");
+                Console.ReadKey();
+                Task.Run(()=> new Client().Connect("localhost", "message word word word"));
+            }
+             
         }
     }
 }
