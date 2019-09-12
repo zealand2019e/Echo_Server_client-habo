@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Echo_Server
 {
@@ -17,15 +19,13 @@ namespace Echo_Server
                 Int32 port = 7777;
                 IPAddress localAddr = IPAddress.Loopback;
 
+                int clientNumber = 0;
+
                 // TcpListener server = new TcpListener(port);
                 server = new TcpListener(localAddr, port);
 
                 // Start listening for client requests.
                 server.Start();
-
-                // Buffer for reading data
-                Byte[] bytes = new Byte[256];
-                String data = null;
 
                 // Enter the listening loop.
                 while (true)
@@ -37,35 +37,7 @@ namespace Echo_Server
                     TcpClient client = server.AcceptTcpClient();
                     Console.WriteLine("Connected!");
 
-                    data = null;
-
-                    // Get a stream object for reading and writing
-                    NetworkStream stream = client.GetStream();
-
-                    int i;
-
-                    // Loop to receive all the data sent by the client.
-                    while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
-                    {
-                        // Translate data bytes to a ASCII string.
-                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                        Console.WriteLine("Received: {0}", data);
-
-                        // Process the data sent by the client.
-                        data = data.ToUpper();
-
-                        string[] words = data.Split(' ');
-                        data = data + " " + words.Length;
-
-                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
-
-                        // Send back a response.
-                        stream.Write(msg, 0, msg.Length);
-                        Console.WriteLine("Sent: {0}", data);
-                    }
-
-                    // Shutdown and end connection
-                    client.Close();
+                    Task.Run(() => HandleStream(client,ref clientNumber));
                 }
             }
             catch (SocketException e)
@@ -77,10 +49,48 @@ namespace Echo_Server
                 // Stop listening for new clients.
                 server.Stop();
             }
-
-
             Console.WriteLine("\nHit enter to continue...");
             Console.Read();
         }
+
+        public void HandleStream(TcpClient client, ref int clientNumber)
+        {
+            // Buffer for reading data
+            Byte[] bytes = new Byte[256];
+            String data = null;
+            clientNumber++;
+
+            // Get a stream object for reading and writing
+            NetworkStream stream = client.GetStream();
+
+            int i;
+
+            // Loop to receive all the data sent by the client.
+            while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                // Translate data bytes to a ASCII string.
+                data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                Console.WriteLine("Received: {0} from client {1}", data, clientNumber);
+
+                // Process the data sent by the client.
+                data = data.ToUpper();
+
+                string[] words = data.Split(' ');
+                data = data + " " + words.Length;
+
+                byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+
+                Thread.Sleep(1000);
+
+                // Send back a response.
+                stream.Write(msg, 0, msg.Length);
+                Console.WriteLine("Sent: {0}", data);
+            }
+
+            // Shutdown and end connection
+            client.Close();
+            clientNumber--;
+        }
+       
     }
 }
